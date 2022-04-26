@@ -7,7 +7,7 @@ public class Gantt extends PApplet
 	
 	public void settings()
 	{
-		size(800, 600);
+		size(800, 900);
 	}
 
 	public void loadTasks()
