@@ -18,6 +18,8 @@ public class Gantt extends PApplet
 	float nameGap = 150;
 	private int maxMonths = 30;
 	private float rowHeight = 40;
+	private int whichTask = -1;
+	private boolean isEnd = false;
 	
 	public void settings()
 	{
@@ -47,12 +49,59 @@ public class Gantt extends PApplet
 	{
 
 
-		
+		for(int i = 0 ; i < tasks.size() ; i ++)
+		{
+			float y1 = (border + border + rowHeight * i) - 15;
+			float y2 = (border + border + rowHeight * i) + 20;
+
+			float x1 = map(tasks.get(i).getStart(), 1, maxMonths, nameGap, width - border);
+			float x2 = map(tasks.get(i).getEnd(), 1, maxMonths, nameGap, width - border);
+			
+			if (mouseX >= x1 && mouseX <= x1 + 20 && mouseY >= y1 && mouseY <= y2)
+			{
+				whichTask = i;
+				isEnd = false;
+				return;
+			}
+
+			if (mouseX <= x2 && mouseX >= x2 - 20 && mouseY >= y1 && mouseY <= y2)
+			{
+				whichTask = i;
+				isEnd = true;
+				return;
+			}
+		}		
+		// default value for whichTask
+		whichTask = -1;	
 		println("Mouse pressed");	
 	}
 
 	public void mouseDragged()
 	{
+
+		if (whichTask != -1)
+		{
+			int month = (int)map(mouseX, nameGap, width - border, 1, maxMonths);
+			
+			if (month >= 1 && month <= maxMonths)
+			{
+				task task = tasks.get(whichTask); 
+				if (isEnd)
+				{
+					if (month - task.getStart() > 0)
+					{
+						task.setEnd(month);
+					}
+				}
+				else
+				{
+					if (task.getEnd() - month > 0 )
+					{
+						task.setStart(month);
+					}
+				}
+			}
+		}
 		println("Mouse dragged");
 	}
 
